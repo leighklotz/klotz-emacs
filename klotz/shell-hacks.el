@@ -53,6 +53,7 @@ It defines c-a to go to beginning of line, not beginning of prompt, though this 
           (if
               (and (get-buffer-process (current-buffer)) (not (yes-or-no-p "Process running -- kill anyway?")))
               (error "You cannot kill buffer %s because the process is still running." (buffer-name)))))))
+  (setenv "PAGER" "cat")
   (setq comint-input-ring-size 1000)
 ;;  (if (not (member 'comint-watch-for-password-prompt comint-output-filter-functions))
 ;;      (setq comint-output-filter-functions (cons 'comint-watch-for-password-prompt comint-output-filter-functions)))
