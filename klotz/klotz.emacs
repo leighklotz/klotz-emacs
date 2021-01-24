@@ -4,15 +4,18 @@
 (when (>= emacs-major-version 24)
   (require 'package)
   (package-initialize)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/")))
+;;  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")))
 
 (require 'keybinding-hacks)
 (require 'smtpmail-hacks)
 (require 'text-hacks)
+(require 'case-hacks)
 (require 'shell-hacks)
 (require 'ack-hacks)
 (require 'tramp-hacks)
+(require 'desktop-hacks)
+
 
 ;; Are we running XEmacs or Emacs?
 (defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
@@ -163,9 +166,9 @@
   (setq a 3)
   (define-key flyspell-mode-map (kbd "C-c C-j") 'flyspell-check-previous-highlighted-word))
 
-(require 'flymake-python)
-(require 'flymake-cursor)
-(require 'my-flymake)
+;; (require 'flymake-python)
+;; (require 'flymake-cursor)
+;; (require 'my-flymake)
 (require 'how-do-i)
 
 (require 'uniquify)
@@ -208,6 +211,11 @@
  '(nodemcu-debug-io t)
  '(nodemcu-interface (quote nodemcu-interface-serial))
  '(nodemcu-target-device "/dev/ttyUSB1")
+ '(package-selected-packages
+   (quote
+   ;; php+-mode
+   ;; flycheck
+    (string-inflection json-mode ham-mode emojify aggressive-indent ack)))
  '(safe-local-variable-values (quote ((backup-inhibited . t)))))
 
 (defun newpw ()
