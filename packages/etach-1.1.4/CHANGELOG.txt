@@ -1,0 +1,238 @@
+1.1.4
+
+Single bug fix correcting number of arguments to write-region;
+affects users of Emacs 20.1 and 20.2 only.
+
+1.1.3
+
+Minor cosmetic change to "name=..." insertion.
+
+Used defalias to associate attach, detach, mime-forward,
+quoted-printable-encode-region, and kill-label-detached with commands
+formerly of same names but now with "etach-" prepended.
+
+Added user-customizable variable
+etach-restore-attachments-after-detach.  This is similar to
+etach-restore-buffer-after-detach, except that some changes to the
+buffer are retained; specifically, any encoded inline content
+(text/plain with no "name=" or "filename=") is decoded in-place.
+
+Now temporarily disable global-font-lock-mode during
+quoted-printable-encode-region to correct a potential unnecessary
+performance hit.
+
+Added two necessary exchange-point-and-mark commands after
+shell-command-on-region for when etach-use-mimencode is set to t and
+received encoded inline plain text ends with no newline.
+
+Call to write-region checks emacs-version and, if Emacs 20+, now again
+confirms on write-region.
+
+1.1.2
+
+Added user-customizable variable etach-restore-buffer-after-detach.
+Setting this to t tells etach to simply detach any attached files and
+then restore the contents of the current RMAIL message.  Added
+function etach-restore-buffer in service of the above.
+
+New spam management capability added via the mime-forward function.
+Invoke mime-forward with prefix argument (i.e., via C-u M-x
+mime-forward or C-u F) to automatically set the "To:" list.
+Mime-forward will scan the email addresses and "Received: from" lines
+in the message and construct reasonably smart "postmaster@..." and
+"abuse@..." addresses and place them on the "To:" line.  (This
+generally will include more addresses than the uce-reply-to-uce
+command.  Users take note, and pare this list manually before you send
+the message.)  Added functions etach-extract-hosts and etach-downcase
+in service of the above.
+
+Added the user-customizable variables etach-spam-message,
+etach-spam-host-exclude-list, and etach-spam-message-subject-string.
+The first is the message to administrators to include with your
+forwarded spam.  The second is a list of host and domain strings that
+should be skipped when the "To:" list is assembled (customize this,
+dear user!).  The third is a string you can set if you would like to
+customize the default subject line preface for spam reports.
+
+All externally visible variables and functions (and some others) were
+renamed if necessary to start with 'etach-', which should ensure that
+etach plays nicely with others.  The exceptions are the commands
+attach, detach, mime-forward, quoted-printable-encode-region, and
+kill-label-detached (since these are supposed to be useful outside of
+etach's friendly confines).  Note that the customizable variables
+already all began with 'etach-', so there should be no user changes
+necessary -- but those who set mime-type-alist (the list of file
+extension and MIME type associations) in a separate file should
+beware.  Finally, changed etach-mime-type-alist from setq to defvar.
+
+Cleaned up the variables used for detach's error handling.
+
+Mime-forward now deletes other windows and adds a subject line, like
+Emacs's own forward function.
+
+Refined the (etach-)who-is-this-from function to drop the "real name"
+portion and retain only the email address portion of the sender name
+if possible.  (This affects the default detachment file name when no
+name is provided by the sender.)  If the address ends in ".com" tweak
+it so that the MIME-o-lator doesn't think it is type
+"application/x-msdos-program."
+
+Pulled an extraneous newline from before the last MIME separator when
+mimencode -b is called (only happens when user has set
+etach-use-mimencode to t) (cosmetic).
+
+Changes for Emacs 19 compatibility (tested with 19.34): New macro
+etach-defcustom called instead of defcustom; expands to defcustom
+(Emacs 20+) or defvar (Emacs 19-).  Local version of
+rmail-msg-is-pruned added (prefaced by "etach-"), calls to
+rmail-toggle-header now have no args and are preceded by checks via
+rmail-msg-is-pruned.  Call to file-name-extension replaced with inline
+code.  Call to with-temp-buffer replaced by explicit
+get-buffer-create, set-buffer, unwind-protect.  Call to char-before
+replaced with char-after (1- (point)), and call to char-after now has
+argument (point).  Call to save-current-buffer replaced with
+save-excursion.  Call to write-region now excludes CONFIRM arg.
+
+1.1.1
+
+Added command kill-label-detached for interactively removing the
+"detached" attribute from a message.
+
+Added defvar and defun for etach-version.
+
+Changed number-to-string to format "%09d" in create-unique-string
+(used to construct MIME boundary).
+
+For compatibility with jka-compr (auto-compression-mode), now locally
+clear the variable jka-compr-compression-info-list just before writing
+any detachment.  The effect is to momentarily disable
+auto-compression-mode, because jka-compr, which bases its compression
+decisions on filename extensions, tries to (re-)compress the contents
+if the extension is associated (through this -info-list) with a
+compression routine.
+
+Like Content-Type and Content-Transfer-Encoding, Content-Disposition
+is now replaced (with X-Former-Content-Disposition) upon detachment.
+
+Added user-customizable variable etach-detachment-default-directory.
+
+1.1.0
+
+Added user-customizable variable etach-prompt-me-for-file-names.  By
+setting this to t, users can confirm (by just pressing the Enter key)
+or change the detachment file names, or "cancel" particular
+detachments within a message via C-g (control-g).
+
+Added user-customizable variable etach-adjust-decoded-plain-text.
+Users can set this to nil to tell etach to decode encoded plain text
+literally, i.e., with no fill and no conversion of visible CR (^M,
+visible) characters to LF (^J, invisible).
+
+Fixed missing newline between decoded plain text that ends without a
+newline and the subsequent MIME separator.
+
+Improved the mime-decode algorithm, especially with respect to file
+naming.  The most visible change (apart from the effects of the
+customizable variable etach-prompt-me-for-file-names mentioned above)
+is that if, for example, FILE.ext exists then detach will try
+FILE_0001.ext, then FILE_0002.ext, etc., up to FILE_9999.ext, rather
+than immediately using a date and/or random sequence of digits to try
+to make detached file names unique.  Error traps were placed around
+the read-file-name and write-file (latter is now write-region; see
+below).
+
+Pulled an extraneous newline from before the last MIME separator in
+mime-forward messages (cosmetic).  Changed write-file to write-region.
+Write-region is more appropriate, since we don't visit detached files
+after writing.  Consolidated common code from attach and mime-forward
+into new function prep-outgoing-mime-message.
+
+Use mail-header-separator variable instead of constant "--text follows
+this line--" in case user has changed the default separator (affects
+attach and mime-forward).  Also, signal error if search for separator
+fails.
+
+Set "forwarded" attribute (label) when mime-forward is activated.
+Note that no checking is done to see that composed message was
+actually sent.  User will have to use k (rmail-kill-label) if he/she
+cares and message was never sent.  (Note that "detached" attribute is
+similar.)
+
+Look for file name in Content-Disposition header if not found in
+Content-Type header.  While it is non-standard to include the file
+name only in the Content-Disposition header, some MUAs do it.  (In
+this case we are a bit more picky about the name string; we require
+the string "filename=" and quotes around the file name itself.  The
+known aforementioned MUAs use this format.)
+
+Added some MIME types.  Added some defvars (now byte-compiles
+cleanly).  Added (provide 'etach).  Use buffer-substring and insert
+instead of yank to avoid setting mark in mime-decode.  No longer using
+a temporary file in mime-forward.  Hexify was fun, but replaced it
+with the more mundane format "%02X".  Implemented other minor
+simplifications of quoted-printable-decode-region.
+
+Put an error trap around detach.  Any error or quit not otherwise
+caught during detach should now restore the buffer contents.
+
+1.0.4
+
+Changed the detachment file naming when no file name is provided:
+Instead of defaulting to a sequence of digits based on the date and
+time, base the file name on the message sender's name.  This makes it
+a little easier to identify detachments.  (And if for some reason
+there is no visible "From:" line, will revert to the old behavior.)
+
+More correctly identified file names with extensions by requiring not
+only a period but also one or more letters or digits.
+
+Corrected a minor but highly visible file name parsing problem in
+situations where provided "name=..." is followed by additional
+parameters.
+
+1.0.3
+
+Added a work-around for when bad MIME separator characters are present
+in messages received from non-strictly-MIME-RFC-compliant MUAs.
+
+Added user-customizable variable etach-use-mimencode.  Users whose
+Emacs installation doesn't include the functions base64-encode-region
+and base64-decode-region can set this variable to t to use the
+external "mimencode" command (if available).
+
+Set case-fold-search to t as needed for those whose
+default-case-fold-search is nil.
+
+Set require-final-newline to nil when saving detached files to
+make sure files are saved correctly even if user has set
+require-final-newline to t elsewhere.
+
+1.0.2
+
+Added fill-region for base64-decoded text/plain when no "name=" is
+specified, i.e., when displayed in place.  (Already had fill-region
+for quoted-printable case.)
+
+Enabled substitution of ?\r with ?\n (^M with ^J) in text/plain no
+"name=" case (when text is displayed in place) for both
+quoted-printable and base64.
+
+Added troubleshooting aids: user-customizable variable etach-debug
+and function etach-debug-msg.
+
+Added "my-" versions of mail-header-end and subst-char-in-string,
+since some versions of Emacs are missing these functions.
+
+1.0.1
+
+Cleaned up handling of MIME parts when Content-Type or
+Content-Transfer-Encoding is absent from part (formerly generated
+error message, now properly assumes default MIME specs of text/plain,
+7bit).
+
+Cleaned up search for headers in MIME part to only search as far as
+the header/content-separating blank line (variable: hend).
+
+1.0
+
+Preliminary release.

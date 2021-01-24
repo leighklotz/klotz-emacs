@@ -1,0 +1,39 @@
+# Tagging XML
+# Draft
+default namespace = "http://www.example.com/2005/tags" # FIXME
+
+namespace xsd = "http://www.w3.org/2001/XMLSchema"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+start = Tags | Posts | Bundles
+
+Tags = element tags { Tag* }
+
+Tag = element tag {attribute count { xsd:integer },
+                   Common.OneTagAttr }
+
+# Issue: Sometimes tag="" is a list of tags and sometimes it is a single tag.
+Common.OneTagAttr = attribute tag { xsd:NMTOKEN }
+Common.MultiTagAttr = attribute tag { xsd:NMTOKENS }
+# tags="" is always a list
+Common.TagsAttr = attribute tags { xsd:NMTOKENS }
+
+Posts = element posts { Post*,
+			attribute dt { xsd:date },
+			attribute user { xsd:NMTOKEN },
+			Common.MultiTagAttr?
+	              }
+
+Post = element post { attribute href { xsd:anyURI },
+		      attribute description { xsd:string },
+		      attribute notes { xsd:string }?,
+		      attribute hash { xsd:hexBinary },
+		      attribute others { xsd:integer },
+		      attribute time { xsd:dateTime },
+		      Common.MultiTagAttr }
+
+Bundles = element bundles { Bundle *}
+
+Bundle = element bundle { attribute name { xsd:NMTOKEN },
+			    Common.TagsAttr }
+

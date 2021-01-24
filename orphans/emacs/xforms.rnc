@@ -1,0 +1,395 @@
+default namespace = "http://www.w3.org/2002/xforms"
+namespace ev = "http://www.w3.org/2001/xml-events"
+namespace xsd = "http://www.w3.org/2001/XMLSchema"
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+include "xml-events-2.rnc"
+include "xmlhost.rnc" # simulate host-language addition of ID attributes, etc.
+
+start = Model | Group | Switch | Repeat | Input | Secret | Textarea | Output | Upload | Range | Select1 | Select | Trigger | Submit
+anyElement =  element * { (attribute * { text } | text | anyElement)* }
+
+# Core
+Common.Attributes = empty
+Linking.Attributes = attribute src { xsd:anyURI }?
+## bind and model are IDREFs
+Single.Node.Binding.Attributes =  attribute bind { xsd:NCName } | (attribute model { xsd:NCName }?, attribute ref { xsd:string })
+## bind and model are IDREFs
+Nodeset.Binding.Attributes =  attribute bind { xsd:NCName } | (attribute model { xsd:NCName }?, attribute nodeset { xsd:string })
+
+Model = element model { Model.Attributes, Model.Content }
+Model.Attributes &=
+    Common.Attributes,
+    Events.Attributes,
+    attribute functions { list { xsd:QName+ }}?,
+    attribute schema { list { xsd:anyURI+ }}?
+Model.Content = Instance* & Submission* & Bind* & element xsd:schema { (attribute * { text } | text | anyElement)* }* & Actions*
+
+Instance = element instance { Instance.Attributes, Instance.Content }
+Instance.Attributes &=
+    Common.Attributes,
+    Linking.Attributes
+Instance.Content = anyElement?
+
+Submission = element submission { Submission.Attributes, Submission.Content }
+## bind is an IDREF
+Submission.Attributes &=
+    Common.Attributes,
+    attribute method { xsd:QName { pattern = "[^:]+:[^:]+" } | "post" | "put" | "get" | "form-data-post" | "urlencoded-post" },
+    attribute bind { xsd:NCName }?,
+    attribute action { xsd:anyURI }?,
+    attribute version { xsd:NMTOKEN }?,
+    attribute indent { xsd:boolean }?,
+    attribute encoding { text }?,
+    attribute omit-xml-declaration { xsd:boolean }?,
+    attribute standalone { xsd:boolean }?,
+    attribute cdata-section-elements { list { xsd:QName+ }}?,
+    attribute replace { xsd:QName { pattern = "[^:]+:[^:]+" } | "all" | "instance" | "none" }?,
+    attribute separator { ";" | "&" }?
+Submission.Content = Actions
+
+Bind = element bind { Bind.Attributes, Bind.Content }
+Bind.Attributes &=
+    Common.Attributes,
+    attribute nodeset { xsd:string }?,
+    attribute type { xsd:string }?, #QName
+    attribute readonly { xsd:string }?,
+    attribute required { xsd:string }?,
+    attribute relevant { xsd:string }?,
+    attribute constraint { xsd:string }?,
+    attribute calculate { xsd:string }?,
+    attribute maxOccurs { xsd:string }?,
+    attribute minOccurs { xsd:string }?,
+    attribute p3ptype { text }?
+Bind.Content = Bind*
+
+# Form Controls
+UI.Common.Attributes &=
+    #host language to add accesskey and navindex here
+    attribute appearance { xsd:QName { pattern = "[^:]+:[^:]+" } | "minimal" | "compact" | "full" }?
+UI.Inline.Content = text & Output?
+UI.Common.Content = (Help | Hint | Alert | Actions)*
+List.UI.Common.Content = (Item | Itemset | Choices)+
+
+Label = element label { Common.Attributes, Linking.Attributes | Label.Attributes | Label.Content }
+#Label.Attributes &=
+#    Common.Attributes,
+#    Linking.Attributes?,
+#    Single.Node.Binding.Attributes?
+Label.Content = UI.Inline.Content
+
+Help = element help { Help.Attributes, Help.Content }
+Help.Attributes &=
+    Common.Attributes,
+    Linking.Attributes?,
+    Single.Node.Binding.Attributes?
+Help.Content = UI.Inline.Content
+
+Hint = element hint { Hint.Attributes, Hint.Content }
+Hint.Attributes &=
+    Common.Attributes,
+    Linking.Attributes?,
+    Single.Node.Binding.Attributes?
+Hint.Content = UI.Inline.Content
+
+Alert = element alert { Alert.Attributes, Alert.Content }
+Alert.Attributes &=
+    Common.Attributes,
+    Linking.Attributes?,
+    Single.Node.Binding.Attributes?
+Alert.Content = UI.Inline.Content
+
+Choices =  element choices { Choices.Attributes, Choices.Content }
+Choices.Attributes &=
+    Common.Attributes
+Choices.Content = Label?, (Choices | Item | Itemset)+
+
+Value = element value { Value.Attributes, Value.Content }
+Value.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes?
+Value.Content =  mixed { anyElement }?
+
+Item = element item { Item.Attributes, Item.Content }
+Item.Attributes &=
+    Common.Attributes
+Item.Content = Label, Value, UI.Common.Content
+
+Itemset = element itemset { Itemset.Attributes, Itemset.Content }
+Itemset.Attributes &=
+    Common.Attributes,
+    Nodeset.Binding.Attributes
+Itemset.Content = Label, (Value | Copy), UI.Common.Content
+
+Copy =  element copy { Copy.Attributes, Copy.Content }
+Copy.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes
+Copy.Content = empty
+
+Filename = element filename { Filename.Attributes, Filename.Content }
+Filename.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes
+Filename.Content = empty
+
+Mediatype = element mediatype { Mediatype.Attributes, Mediatype.Content }
+Mediatype.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes
+Mediatype.Content = empty
+
+Output = element output { Output.Attributes, Output.Content }
+Output.Attributes &=
+    Common.Attributes,
+    UI.Common.Attributes,
+    Single.Node.Binding.Attributes?,
+    attribute value { xsd:string }?
+Output.Content = Label?
+
+Input = element input { Input.Attributes, Input.Content }
+Input.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    attribute inputmode { text }?,
+    UI.Common.Attributes,
+    attribute incremental { xsd:boolean }?
+Input.Content = Label, UI.Common.Content
+
+Textarea = element textarea { Textarea.Attributes, Textarea.Content }
+Textarea.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    attribute inputmode { text }?,
+    UI.Common.Attributes,
+    attribute incremental { xsd:boolean }?
+Textarea.Content = Label, UI.Common.Content
+
+Secret = element secret { Secret.Attributes, Secret.Content }
+Secret.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    attribute inputmode { text }?,
+    UI.Common.Attributes,
+    attribute incremental { xsd:boolean }?
+Secret.Content = Label, UI.Common.Content
+
+Upload = element upload { Upload.Attributes, Upload.Content }
+Upload.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    attribute mediatype { text }?,
+    UI.Common.Attributes,
+    attribute incremental { xsd:boolean }?
+Upload.Content = Label, Filename?, Mediatype?, UI.Common.Content
+
+Select1 = element select1 { Select1.Attributes, Select1.Content }
+Select1.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    UI.Common.Attributes,
+    attribute selection { "open" | "closed" }?,
+    attribute incremental { xsd:boolean }?
+Select1.Content = Label, List.UI.Common.Content, UI.Common.Content
+
+Select = element select { Select.Attributes, Select.Content }
+Select.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    UI.Common.Attributes,
+    attribute selection { "open" | "closed" }?,
+    attribute incremental { xsd:boolean }?
+Select.Content = Label, List.UI.Common.Content, UI.Common.Content
+
+Range = element range { Range.Attributes, Range.Content }
+Range.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes,
+    UI.Common.Attributes,
+    attribute start { text }?,
+    attribute end { text }?,
+    attribute step { text }?,
+    attribute incremental { xsd:boolean }?
+Range.Content = Label, UI.Common.Content
+
+Trigger = element trigger { Trigger.Attributes, Trigger.Content }
+Trigger.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes?,
+    UI.Common.Attributes?
+Trigger.Content = Label, UI.Common.Content
+
+Submit = element submit { Submit.Attributes, Submit.Content }
+## submission is an IDREF
+Submit.Attributes &=
+    Common.Attributes,
+    attribute submission { xsd:NCName },
+    Single.Node.Binding.Attributes?,
+    UI.Common.Attributes?
+Submit.Content = Label, UI.Common.Content
+
+Form.Controls = Input | Textarea | Secret | Output | Upload | Select1 | Select | Range | Submit | Trigger
+
+# Actions
+Action = element action { Action.Attributes, Action.Content }
+Action.Attributes &=
+    Common.Attributes,
+    Events.Attributes
+Action.Content = Actions
+
+Dispatch = element dispatch { Dispatch.Attributes, Dispatch.Content }
+## target is an IDREF
+Dispatch.Attributes &=
+    Common.Attributes,
+    attribute name { xsd:NMTOKEN },
+    attribute target { xsd:NCName },
+    attribute bubbles { xsd:boolean }?,
+    attribute cancelable { xsd:boolean }?,
+    Events.Attributes
+Dispatch.Content = empty
+
+Rebuild = element rebuild { Rebuild.Attributes, Rebuild.Content }
+## model is an IDREF
+Rebuild.Attributes &=
+    Common.Attributes,
+    attribute model { xsd:NCName },
+    Events.Attributes
+Rebuild.Content = empty
+
+Revalidate = element revalidate { Revalidate.Attributes, Revalidate.Content }
+## model is an IDREF
+Revalidate.Attributes &=
+    Common.Attributes,
+    attribute model { xsd:NCName },
+    Events.Attributes
+Revalidate.Content = empty
+
+Recalculate = element recalculate { Recalculate.Attributes, Recalculate.Content }
+## model is an IDREF
+Recalculate.Attributes &=
+    Common.Attributes,
+    attribute model { xsd:NCName },
+    Events.Attributes
+Recalculate.Content = empty
+
+Refresh = element refresh { Refresh.Attributes, Refresh.Content }
+## model is an IDREF
+Refresh.Attributes &=
+    Common.Attributes,
+    attribute model { xsd:NCName },
+    Events.Attributes
+Refresh.Content = empty
+
+Setfocus = element setfocus { Setfocus.Attributes, Setfocus.Content }
+## model is an IDREF
+Setfocus.Attributes &=
+    Common.Attributes,
+    attribute control { xsd:NCName },
+    Events.Attributes
+Setfocus.Content = empty
+
+Load = element load { Load.Attributes, Load.Content }
+Load.Attributes &=
+    Common.Attributes,
+    attribute resource { xsd:anyURI },
+    Single.Node.Binding.Attributes?,
+    attribute show { "new" | "replace" }?,
+    Events.Attributes
+Load.Content = empty
+
+Setvalue = element setvalue { Setvalue.Attributes, Setvalue.Content }
+Setvalue.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes?,
+    attribute value { xsd:string }?,
+    Events.Attributes
+Setvalue.Content = text
+
+Send = element send { Send.Attributes, Send.Content }
+## submission is an IDREF
+Send.Attributes &=
+    Common.Attributes,
+    attribute submission { xsd:NCName },
+    Events.Attributes
+Send.Content = empty
+
+Reset = element reset { Reset.Attributes, Reset.Content }
+## model is an IDREF
+Reset.Attributes &=
+    Common.Attributes,
+    attribute model { xsd:NCName },
+    Events.Attributes
+Reset.Content = empty
+
+Insert = element insert { Insert.Attributes, Insert.Content }
+Insert.Attributes &=
+    Common.Attributes,
+    attribute at { xsd:string },
+    attribute position { "before" | "after" },
+    Nodeset.Binding.Attributes?,
+    Events.Attributes
+Insert.Content = empty
+
+Delete = element delete { Delete.Attributes, Delete.Content }
+Delete.Attributes &=
+    Common.Attributes,
+    attribute at { xsd:string },
+    Nodeset.Binding.Attributes?,
+    Events.Attributes
+Delete.Content = empty
+
+Setindex = element setindex { Setindex.Attributes, Setindex.Content }
+## repeat is an IDREF
+Setindex.Attributes &=
+    Common.Attributes,
+    attribute repeat { xsd:NCName },
+    attribute index { xsd:string },
+    Events.Attributes
+Setindex.Content = empty
+
+Toggle = element toggle { Toggle.Attributes, Toggle.Content }
+## case is an IDREF
+Toggle.Attributes &=
+    Common.Attributes,
+    attribute case { xsd:NCName },
+    Events.Attributes
+Toggle.Content = empty
+
+Message = element message { Message.Attributes, Message.Content }
+Message.Attributes &=
+    Common.Attributes,
+    attribute level { "ephemeral" | "modeless" | "modal" },
+    Linking.Attributes?,
+    Single.Node.Binding.Attributes?,
+    Events.Attributes
+Message.Content = UI.Inline.Content
+
+Actions = (Action | Dispatch | Rebuild | Recalculate | Refresh | Setfocus | Load | Setvalue | Send | Reset | Insert | Delete | Setindex | Toggle | Message)*
+
+   # Advanced User Interface
+Repeat = element repeat { Repeat.Attributes, Repeat.Content }
+Repeat.Attributes &=
+    Common.Attributes,
+    Nodeset.Binding.Attributes,
+    UI.Common.Attributes,
+    attribute startindex { xsd:positiveInteger }?,
+    attribute number { xsd:nonNegativeInteger }?
+Repeat.Content =  (Form.Controls | Group | Repeat)*
+
+Group = element group { Group.Attributes, Group.Content }
+Group.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes?,
+    UI.Common.Attributes
+Group.Content = Label?, (Form.Controls | Group | Repeat | Switch)*
+
+Switch = element switch { Switch.Attributes, Switch.Content }
+Switch.Attributes &=
+    Common.Attributes,
+    Single.Node.Binding.Attributes?,
+    UI.Common.Attributes
+Switch.Content = Case+
+
+Case = element case { Case.Attributes, Case.Content }
+Case.Attributes &=
+    Common.Attributes
+Case.Content = Label?, (Form.Controls | Group | Repeat | Switch)+

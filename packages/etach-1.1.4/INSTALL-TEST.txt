@@ -1,0 +1,54 @@
+Installation test:
+------------------
+
+Etach provides several interactive commands, but the three most
+important are attach, detach, and mime-forward.  The steps below will
+allow you to quickly test all three.  If any of the following steps
+fail, please see the file FAQ.txt and then contact me with the
+details.
+
+1. Execute the load instruction described in the INSTALL.txt file, or
+   reload (or eval-buffer) your startup file, or simply exit and
+   restart emacs.
+
+2. Start composing a brief text email message to yourself (via Mail
+   mode; e.g., type C-x m, where "C-x" denotes the Ctrl key together
+   with the x key).
+
+3. Before sending the message, type
+
+     M-x attach RET
+
+   Note that "M-" denotes the emacs "meta" key (typing the Esc key
+   followed by x should work) and "RET" denotes the "Return" or
+   "Enter" key.  You will be prompted for a file to attach; type in
+   the name of some existing file, then RET.  You should then see the
+   file (in encoded form) attached to your message.  Send the message.
+
+4. Now start rmail (M-x rmail RET, or switch to the RMAIL buffer) and
+   retrieve your mail (M-x rmail-get-new-mail, or g).  Navigate to the
+   new message that you sent to yourself in step (3).
+
+   IMPORTANT: SAVE AND MAKE A BACKUP COPY OF YOUR RMAIL FILE(S) BEFORE
+   PROCEEDING.  This way you can restore the file(s) if something goes
+   awry.
+
+5. After backing up your RMAIL file(s), type
+
+     M-x detach RET
+
+   The file you received as an attachment should now be detached into
+   the "detached" subdirectory of your RMAIL working directory
+   (possibly with a modified file name).  (If the detach operation did
+   not work as expected, please be sure to see the file FAQ.txt.)
+   Compare it to the original file you attached with diff or md5sum;
+   it should be identical.
+
+6. Now return to the RMAIL buffer and type
+
+     M-x mime-forward RET
+
+   This should act like the usual rmail-forward command, except that
+   the forwarded message will be sent as a MIME message/rfc822
+   attachment, rather than just inserted as text.  This is useful for
+   forwarding mail that contains attachments.

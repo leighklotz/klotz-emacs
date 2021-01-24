@@ -1,0 +1,134 @@
+;;;-*-EMACS-LISP-*-
+;;;
+;;; Leigh L. Klotz, Jr. <klotz@graflex.org>
+;;; Simple major mode for editing APL and running A+ interpreter.
+;;;
+;;; I hereby place this in the public domain.
+;;;
+
+;; Are we running XEmacs or Emacs?
+(defvar running-xemacs )
+(defvar aplus-mode-hook nil)
+
+(defvar aplus-font-emacs "kaplcour")
+(defvar aplus-font-xemacs 
+  '(default ((t (:size "14pt" :family "Kapl"))) t))
+
+
+(defun aplus-mode ()
+  "Major mode for editing APLus code or running aplus.
+To run, use \\[shell] to invoke a+ and then type \\[aplus-mode].
+To edit, just use \\[aplus-mode].
+Not yet a major mode, but getting close."
+  (interactive)
+  (aplus-mode-initialize)
+  (aplus-mode-variables)
+  (run-hooks 'aplus-mode-hook))
+
+(defun aplus-mode-variables ()
+  (make-local-variable 'comment-start)
+  (setq comment-start "ã")
+  ; eventually do different fonts for input and output
+  ; (make-local-variable 'font-lock-defaults)
+  )
+
+(defun aplus-mode-initialize ()
+  (local-set-key "\ei" 'aplus-insert)
+  (local-set-key "\eh" 'aplus-help)
+  (if (string-match "XEmacs\\|Lucid" emacs-version)
+      (custom-set-faces aplus-font-xemacs)
+    (set-face-font 'default aplus-font-emacs)))
+
+(defun aplus-insert ()
+  "Insert apl character by name.
+Type ? for a list of names"
+  (interactive)
+  (let ((name (completing-read "Name: " aplus-symbols nil t)))
+    (if (not (equal name ""))
+	(let ((val (cadr (assoc name aplus-symbols))))
+	  (if val (insert val))))))
+
+(defun aplus-help ()
+  "Describe apl character.  
+Starts with character at cursor, or you can type in a name of a character."
+  (interactive)
+  (let* ((str (and (>= (point-max) (1+ (point)))
+		   (buffer-substring (point) (1+ (point)))))
+	 (initial-name (do ((a aplus-symbols (cdr a)))
+			   ((null a) nil)
+			 (if (equal str (cadr (car a))) (return (car (car a))))))
+	 (name (completing-read "Name: " aplus-symbols nil t initial-name))
+	 (def (assoc name aplus-symbols)))
+    (message (concat "init: " initial-name
+	      (if (equal name "") (concat str " ") "")
+	      (or (and (nth 0 def) (concat "(" (nth 0 def) ") ")) "")
+	      (or (and (nth 2 def) (concat "Monadic: " (nth 2 def) " ")) "")
+	      (or (and (nth 3 def) (concat "Dyadic: "  (nth 3 def) " ")) "")
+	      (or (nth 4 def) "")))))
+
+(defvar aplus-symbols
+'(
+; C	NAME		MONADIC FUNCTION	DYADIC FUNCTION		NOTES
+("high-bar"	"¢"	nil			nil			"Negative Number")
+("bang"		"!"	"Item Ravel"   		"Restructure"		nil)
+("number-sign"	"#"	nil			"Choose")
+("dollar"	"$"	nil			nil "For system commands - abandon current function execution")
+("percent"	"%"	"Value"			"Value in Context")
+("ampersand"	"&"	"Stack References"	nil)
+("asterisk"	"*"	"Exponential"		"Power")
+("plus"		"+"	"Identity"		"Add")
+("comma"	","	"Ravel"			"Catenate")
+("mid-bar"	"-"	"Negate"		"Minus")
+("dot"		"."	nil			"Inner Product"		"The derived function is Dyadic")
+("slash"	"/"	nil			"Compress"		"MONADIC OPERATOR, DERIVING A DYADIC FUNCTION Reduce")
+("colon"	":"	nil			nil			"used to create Defined Functions - used to create Dependencies")
+("less-than"	"<"	"Box / Enclose"		"Less than")
+("less-equal"   "¤"     "Grade Up"                 "Less than or equal to")
+("equals"	"="	nil			"Equals")
+("greater-than"	">"	"Unbox / Disclose"	"Greater than")
+("query"	"?"	"Roll"			"Deal")
+("at"		"@"	"Rank"			nil			"The derived function may be Monadic or Dyadic")
+("backslash"	"\\"	"Expand"          	nil			"MONADIC OPERATOR, DERIVING A DYADIC FUNCTION Scan")
+("caret"	"^"	"Stop"			"And")
+("back-quote"	"`"	nil			nil			"Used to create symbols")
+("verticalbar"	"|"	"Absolute Value"	"Residue")
+("tilde"	"~"	"Not"			nil)
+("greater-equal""¦"	"Stop"			"Greater than or equal to")
+("not-equal"	"¨"	nil			"Not equal to")
+("down-caret"	"©"	"Type"			"Cast (symbol as left argument) Or   (boolean)")
+("cross"	"«"	"Sign"			"Times")
+("domino"	"­"	"Matrix Inverse"	"Solve")
+("dotted-del"	"®"	"Bitwise"   		nil			"The derived function may be Monadic or Dyadic")
+("tri-bar"	"½"	"Depth"			"Match")
+("up-tack"	"Â"	"Pack"			"Decode Base")
+("downstile"	"Ä"	"Floor"			"Min")
+("epsilon"	"Å"	"Rake"			"Member")
+("iota"		"É"	"Interval"		"Find Index of")
+("jot"		"Ê"	nil			nil			"PLACEHOLDER FOR DYADIC OPERATOR Used with Dot for Outer Product The derived function is Dyadic")
+("down-tack"	"Î"	"Unpack"		"Encode Representation")
+("circle"	"Ï"	"Pi times"		"Circle")
+("rho"		"Ò"	"Shape"			"Reshape")
+("upstile"	"Ó"	"Ceiling"		"Max")
+("down-arrow"	"Õ"	"Print"			"Drop")
+("down-shoe"	"Ã"	"Separate Symbols"	"Combine Symbols")
+("right-shoe"	"Ø"	"Raze"			"Pick")
+("up-arrow"	"Ù"	"Signal"		"Take")
+("left-shoe"	"Ú"	"Partition Count"	"Partition")
+("right-tack"	"Û"	"Right"			nil)
+("left-tack"	"Ý"	"null"			"Left")
+("divide"	"ß"	"Reciprocal"		"Divide")
+("i-beam"	"à"	"Map In"		"Map")
+("hydrant"	"â" 	"Execute"		"Protected Execute")
+("lamp"		"ã"	nil			nil			"Used for comments")
+("del-stile"	"ç"	"Grade Down"		nil)
+("delta-stile"	"è"	"Grade Up"		"Bins")
+("thorn"	"î" 	"Default Format"	"Format")
+("circle-star"	"ð"	"Natural Log"		"Log")
+("circle-backslash"	"ô" "Transpose"		"Transpose Axes")
+("circle-stile"	"÷"	"Reverse"		"Rotate")
+("left-arrow"	"û"	"execution"          	"Assignment")
+("right-arrow"	"ý"	nil			nil			"current function execution - clear most-recent suspension")
+("underscore"	"_"	nil			nil			" used as a separator in names")
+("semicolon"	";"     nil			nil			"Statement Separator:  - used to separate multiple statements on one line - used to end statements in defined functions - used to separate elements for nested arrays - used to separate dimensions within bracket indexing")
+
+))

@@ -1,0 +1,6 @@
+# XHTML+XForms
+
+default namespace = "http://www.w3.org/1999/xhtml"
+
+include "../xhtml.rnc"
+include "xhtml-xforms.rnc"

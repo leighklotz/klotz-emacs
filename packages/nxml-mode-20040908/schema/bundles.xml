@@ -1,0 +1,10 @@
+<?xml version='1.0' standalone='yes'?>
+<bundles xmlns="http://www.example.com/2005/tags">
+  <bundle name="web" tags="REST RFC XSS atom axis blog frameworks google microformats soap tags webservices wiki xforms xml xslt" />
+  <bundle name="language" tags="Content_in_Japanese eth japan thorn Þ ð" />
+  <bundle name="photo" tags="graflex largeformat photography speedgraphic" />
+  <bundle name="math" tags="calculator curta dsp graphing mathematics" />
+  <bundle name="hacking" tags="AVR ComputerScience LCD LED awt calculator clock cryptography hiptop jar java javascript lighting linux minivac pic rmi sendmail spreadsheets usb" />
+  <bundle name="ham" tags="10ghz BPL CW EFHWA ElectricalEngineering RFI SDR VLF WWVB ameco amplifier amplifiers antenna aprs bandplan batteries class-e club clubs connectors dx elecraft electronics elf generator hamradio heathkit hfpack homebrew htx400 inductors k1 k2 kits kx1 lf loop magiceye magloop nets pixie powersupplies propagation psk31 qro qrp qsl r390 repeater toroids transmissionlines tube tuner vfd vhf vox xdif" />
+</bundles>
+

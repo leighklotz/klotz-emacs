@@ -1,0 +1,6 @@
+<?xml version='1.0' standalone='yes'?>
+<posts xmlns="http://www.example.com/2005/tags" dt="2005-11-07" tag="" user="leighklotz">
+  <post href="http://www.dn.se/DNet/jsp/polopoly.jsp?d=597&amp;a=483764&amp;previousRenderType=2" description="DN - Nyheter - H??r d??dar f??gelinfluensan en cell" hash="b74dc07ef7ac8ef09171772341a3ec5e" others="2" tag="photography" time="2005-11-07T17:29:20Z" />
+  <post href="http://www.formsplayer.com/download/swviewer1.0.html" description="Sidewinder Viewer" hash="9acd66dc56377cf3dc425f02c1f741e4" others="1" tag="xforms" time="2005-11-07T18:57:34Z" />
+  <post href="http://www.xml.com/pub/a/2004/11/10/delicious.html" description="XML.com: Introducing del.icio.us" hash="422bda451b20a7e2ed2ec3763995dca2" others="567" tag="REST tags webservices" time="2005-11-07T19:06:13Z" />
+</posts>
