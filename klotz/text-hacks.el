@@ -132,9 +132,17 @@ selected rectangle."
       (e (if mark-active end (point-max))))
     (message "Word count: %s" (how-many "\\w+" b e))))
 
-;; Always end a file with a newline
-(setq require-final-newline 'ask)
-;; Stop at the end of the file, not just add lines
-(setq next-line-add-newlines nil)
+(defun line-number-region () 
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (narrow-to-region (point) (mark))
+      (goto-char (point-min))
+      (let ((i 0))
+	(while (<= (point) (point-max))
+	  (beginning-of-line 1)
+	  (insert (format "%d " i))
+	  (setq i (1+ i))
+	  (next-line 1))))))
 
 (provide 'text-hacks)
