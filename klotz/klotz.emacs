@@ -15,6 +15,7 @@
 (require 'ack-hacks)
 (require 'tramp-hacks)
 (require 'desktop-hacks)
+(require 'hex)
 
 
 ;; Are we running XEmacs or Emacs?
@@ -27,6 +28,8 @@
 
 ;; Always end a file with a newline
 (setq require-final-newline 'ask)
+;; Stop at the end of the file, not just add lines
+(setq next-line-add-newlines nil)
 
 ;; Require text files with a newline
 (setq text-mode-hook 
@@ -42,8 +45,6 @@
 	     (setq require-final-newline 'ask)
 	     (local-set-key (kbd "C-x #") 'copy-line-number-for-jdb)))
 
-
-
 ;; Stop at the end of the file, not just add lines
 (setq next-line-add-newlines nil)
 
@@ -52,7 +53,6 @@
 (global-set-key (quote [-67108832]) 'just-one-space)    
 
 (require 'qra)
-(require 'schema)
 
 (put 'narrow-to-region 'disabled nil)
 
@@ -70,42 +70,6 @@
   (load custom-file))
 
 (global-set-key "%" 'query-replace-regexp)
-(defun perldoc (module)
-  "Get perldoc on MODULE"
-  (interactive "sPerldoc: ")
-  (require 'man)
-  (let ((buffer-name (concat "*Perldoc " module "*")))
-    (save-excursion 
-      (set-buffer (get-buffer-create buffer-name))
-      (delete-region (point-min) (point-max))
-      (shell-command (concat "perldoc " (shell-quote-argument module)) buffer-name)
-      (goto-char (point-min))
-      (Man-fontify-manpage)
-      (goto-char (point-min))
-      (replace-regexp "." ""));there are still some left.
-   (switch-to-buffer-other-window buffer-name)))
-
-; doesn't do fontification for some reason
-;(defun perldoc (man-args)
-;  (interactive "sPerldoc: ")
-; (require 'man)
-;  (let ((manual-program "perldoc"))
-;    (man man-args)))
-(defun hex-string-to-ascii (string) 
-  (do ((new (make-string (/ (length string) 2) 0))
-       (i 0 (+ i 1))
-       (len (/ (length string) 2)))
-      ((= i len) new)
-    (setf (aref new i)
-	    (+ (* 16 (hexify (aref string (* i 2))))
-	            (hexify (aref string (+ 1 (* i 2))))))))
-
-(defun hexify (ascii) 
-  (cond ((< ascii ?0) (error "digit %s not understood" ascii))
-	((<= ascii ?9) (- ascii ?0))
-	((<= ascii ?F) (- ascii (- ?A 10)))
-	((<= ascii ?f) (- ascii (- ?a 10)))
-	(t (error "digit %s not understood" ascii))))
 
 (put 'set-goal-column 'disabled nil)
 
@@ -120,57 +84,17 @@
 (setq comint-input-ring-size 1000)
 
 ;; m-x compile is nice but i need to set up the compilation environment in a shell
-;; and then grab the output
-(defvar my-bash-prompt "\n\\[klotz@pinstripe[^\\$\\]*]$ ")
-(defun fix-bugs () 
-  (interactive)
-  (let ((errors (buffer-substring (save-excursion (beginning-of-line 0) (if (re-search-backward my-bash-prompt nil t) (point) (point-min))) (point))))
-    (switch-to-buffer "*compilation*")
-    (kill-region (point-min) (point-max))
-    (insert errors))
-  (compilation-mode)
-  (next-error))
+;; and then grab the output.
+(defvar my-bash-prompt (format "\n\\[klotz@%s[^\\$\\]*]$ " (system-name)))
 
-(load "~klotz/emacs/rnc-mode")
-
-(fset 'xml-mode 'nxml-mode)
-(add-hook 'flyspell-mode-hook
-          '(lambda ()
-             (add-to-list 'flyspell-prog-text-faces 'nxml-text-face)))
-
-; (push "~klotz/emacs/nxml-mode-20041004/" load-path)
-
-; (load-library "nxml-mode")
-; (load "~klotz/emacs/nxml-mode-20041004/rng-auto.el")
-(setq auto-mode-alist
-        (cons '("\\.\\(xslt\\|vdf\\|html\\|xhtml\\|xml\\|xsl\\|rng\\|xhtml\\|xsd\\)\\'" . nxml-mode)
-	      auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.pde" . c++-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.ino" . c++-mode) auto-mode-alist))
-
-(load "~klotz/emacs/xforms.el")
-
-(defun line-number-region () 
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (narrow-to-region (point) (mark))
-      (goto-char (point-min))
-      (let ((i 0))
-	(while (<= (point) (point-max))
-	  (beginning-of-line 1)
-	  (insert (format "%d " i))
-	  (setq i (1+ i))
-	  (next-line 1))))))
 
 (add-hook 'flyspell-mode-hook 'my-flyspell-mode-hook)
 (defun my-flyspell-mode-hook ()
   (setq a 3)
   (define-key flyspell-mode-map (kbd "C-c C-j") 'flyspell-check-previous-highlighted-word))
 
-;; (require 'flymake-python)
-;; (require 'flymake-cursor)
-;; (require 'my-flymake)
 (require 'how-do-i)
 
 (require 'uniquify)
@@ -180,26 +104,7 @@
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 ;(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 
-;;; Raman's Google Hacks
-;;; (push "~klotz/emacs/g-client/" load-path)
-;;; (load-library "g")
-;;; (load-library "time-date")
-;;;
-;;;(custom-set-variables
-;;; '(browse-url-browser-function (quote w3m-browse-url))
-;;; '(gblogger-user-email "leigh.klotz@gmail.com")
-;;; '(gblogger-user-password nil))
-
 (put 'downcase-region 'disabled nil)
-
 (put 'upcase-region 'disabled nil)
 
-(defun newpw ()
-  (interactive)
-  (let ((pw
-	 (with-temp-buffer
-	   (shell-command "pwgen -s 12 | head -1" (current-buffer))
-	   (buffer-substring (point-min) (1- (point-max))))))
-    (insert pw)))
-    
 
