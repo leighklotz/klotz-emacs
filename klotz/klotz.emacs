@@ -65,7 +65,9 @@
 ;;; in emacs will respect this variable and edit that file instead of
 ;;; editing ~/.emacs
 (setq custom-file (concat "~/.emacs.d/klotz/custom-" (system-name) ".el"))
-(load custom-file)
+(if (not (file-exists-p custom-file))
+    (message "Please create empty custom file %s" custom-file)
+  (load custom-file))
 
 (global-set-key "%" 'query-replace-regexp)
 (defun perldoc (module)
