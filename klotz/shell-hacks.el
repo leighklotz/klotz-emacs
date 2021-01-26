@@ -130,10 +130,20 @@ This is a customized function which calls \\[old-shell]."
   (setq compilation-skip-threshold 2)
   (fix-bugs))
 
+(defun fix-bugs () 
+  (interactive)
+  (let ((errors (buffer-substring (save-excursion (beginning-of-line 0) (if (re-search-backward my-bash-prompt nil t) (point) (point-min))) (point))))
+    (switch-to-buffer "*compilation*")
+    (kill-region (point-min) (point-max))
+    (insert errors))
+  (compilation-mode)
+  (next-error))
+
 (defun fix-warnings()
   (interactive)
   "Make `next-error` go to next warning, not just next error. See `fix-errors`"
   (setq compilation-skip-threshold 1)
   (fix-bugs))
+
 
 (provide 'shell-hacks)
