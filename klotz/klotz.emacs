@@ -64,7 +64,7 @@
 ;;; in a well-known file, one for each hostname.  Custom commnads
 ;;; in emacs will respect this variable and edit that file instead of
 ;;; editing ~/.emacs
-(setq custom-file (concat "~/.emacs.d/custom-" (system-name)))
+(setq custom-file (concat "~/.emacs.d/klotz/custom-" (system-name) ".el"))
 (load custom-file)
 
 (global-set-key "%" 'query-replace-regexp)
