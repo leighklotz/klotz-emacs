@@ -1,4 +1,4 @@
-;;;-*-EMACS-*-
+;;;-*-EMACS-LISP-*-
 (push "~klotz/.emacs.d/klotz" load-path)
 
 (when (>= emacs-major-version 24)
@@ -106,5 +106,3 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
-
