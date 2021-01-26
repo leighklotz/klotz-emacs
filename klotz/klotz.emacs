@@ -60,12 +60,12 @@
 
 (setq line-move-visual nil)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(font-lock-string-face ((((class color) (background light)) (:foreground "Blue")))))
+;;; Maintain custom-set-variables, custom-set-faces, etc.
+;;; in a well-known file, one for each hostname.  Custom commnads
+;;; in emacs will respect this variable and edit that file instead of
+;;; editing ~/.emacs
+(setq custom-file (concat "~/.emacs.d/custom-" (system-name)))
+(load custom-file)
 
 (global-set-key "%" 'query-replace-regexp)
 (defun perldoc (module)
