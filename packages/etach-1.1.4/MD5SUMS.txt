@@ -1,7 +1,0 @@
-74b0d9a0c6b0e7bd17984631d465fda5  etach-1.1.4/CHANGELOG.txt
-7f3c513cf0efe1ba90f7d79428d37283  etach-1.1.4/FAQ.txt
-386e0de19aff8da941f57aabe624a079  etach-1.1.4/INSTALL-TEST.txt
-1dfa508cc57b283409a3f5fef5b911c8  etach-1.1.4/INSTALL.txt
-bee99d0cf6c4157e643085ca1f3c06ad  etach-1.1.4/LICENSE.txt
-5cb1e574ec63ebea1753a6e47d5e16b8  etach-1.1.4/README.txt
-468da683ecfc8bd9c1455658eac5f293  etach-1.1.4/etach.el

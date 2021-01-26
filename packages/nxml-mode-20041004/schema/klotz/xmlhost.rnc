@@ -1,6 +1,0 @@
-datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
-
-Common.Attributes &=
-  attribute id { xsd:NCName }?,
-#  attribute xml:id { xsd:NCName }?,
-  attribute class { xsd:NMTOKENS }?
