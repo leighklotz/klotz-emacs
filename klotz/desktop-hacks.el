@@ -13,7 +13,7 @@
 
 (defun name-this-emacs (new-invocation-name)
   (interactive "sPersist emacs name: ")
-  (if (and (not (string= invocation-name "emacs"))
+  (if (and (not (string= (downcase invocation-name) "emacs"))
 	   (not (string= invocation-name new-invocation-name)))
       (error "invocation-name is already set to %s" invocation-name))
   (let ((new-desktop-dirname (named-emacs-desktop-dirname new-invocation-name)))
