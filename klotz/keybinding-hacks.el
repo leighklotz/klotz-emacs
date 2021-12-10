@@ -19,7 +19,9 @@
 (global-set-key (kbd "C-z") 'undo)
 (global-unset-key (kbd "C-x C-z"))
 
-                                        ; someone turned M-g into a prefix command for font stuff, making it impossible to define in local modes.
+;; someone turned M-g into a prefix command for font stuff,
+;; making it impossible to define in local modes.
+(global-unset-key (kbd "M-g"))
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-l") 'recenter)
 
