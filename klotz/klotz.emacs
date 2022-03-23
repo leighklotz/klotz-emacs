@@ -41,6 +41,8 @@
 ;; when left at the default, if you type a single lowercase letter and it matches a camel-case word, it lowercases the word.
 (setq dabbrev-case-fold-search nil)
 (setq comint-input-ring-size 1000)
+(setq inhibit-startup-message t)
+
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
