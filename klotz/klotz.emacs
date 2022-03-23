@@ -12,6 +12,7 @@
 (require 'text-hacks)
 (require 'case-hacks)
 (require 'shell-hacks)
+(require 'buffer-hacks)
 (require 'ack-hacks)
 (require 'tramp-hacks)
 (require 'desktop-hacks)
@@ -40,6 +41,8 @@
 ;; when left at the default, if you type a single lowercase letter and it matches a camel-case word, it lowercases the word.
 (setq dabbrev-case-fold-search nil)
 (setq comint-input-ring-size 1000)
+(setq inhibit-startup-message t)
+
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -86,3 +89,17 @@
 (if (not (file-exists-p custom-file))
     (message "Please create empty custom file %s" custom-file)
   (load custom-file))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ack string-inflection yaml-mode tldr scala-mode pig-mode php-mode markdown-mode json-mode graphviz-dot-mode go-mode flymake-json exec-path-from-shell csv-mode csv company))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
