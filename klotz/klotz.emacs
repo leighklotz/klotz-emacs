@@ -12,6 +12,7 @@
 (require 'text-hacks)
 (require 'case-hacks)
 (require 'shell-hacks)
+(require 'buffer-hacks)
 (require 'ack-hacks)
 (require 'tramp-hacks)
 (require 'desktop-hacks)
