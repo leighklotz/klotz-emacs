@@ -2,7 +2,9 @@
 ;;; Leigh Klotz <klotz@klotz.me>
 ;;; Keybindings and general global key fixes
 ;;;
-(tool-bar-mode 0)
+
+(if (fboundp 'tool-bar-mode)
+    (tool-bar-mode 0))
 
 ;; Set up the keyboard so the delete key on both the regular keyboard
 ;; and the keypad delete the character under the cursor and to the right
@@ -34,10 +36,12 @@
   (scroll-up 3))
 
 ;;; Bucky Bits!
-(setq w32-pass-lwindow-to-system nil
-      w32-pass-rwindow-to-system nil)
-(setq w32-lwindow-modifier 'super)  ; lwindow acts as super
-(setq w32-rwindow-modifier 'super)  ; rwindow acts as super, not hyper
+(when (memq system-type '(windows-nt cygwin ms-dos))
+  (setq w32-pass-lwindow-to-system nil
+	w32-pass-rwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)	; lwindow acts as super
+  (setq w32-rwindow-modifier 'super) ; rwindow acts as super, not hyper
+  )
 
 ; (global-set-key "\eP" 'my-crash-sound)
 
