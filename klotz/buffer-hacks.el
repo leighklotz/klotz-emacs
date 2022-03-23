@@ -12,11 +12,7 @@
     ))
 
 (defun count-nontrivial-buffers () 
-  (do ((i 0)
-       (buffers (buffer-list) (cdr buffers)))
-      ((null buffers) i)
-    (if (not (buffer-trivial-p (car buffers)))
-        (incf i))))
+  (seq-count #'buffer-non-trivial-p (buffer-list)))
 
 (defun exit-emacs-only-if-trivial ()
   (interactive)
