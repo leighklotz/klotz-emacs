@@ -27,6 +27,11 @@
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-l") 'recenter)
 
+;; emacs font stuff has never intrigued me
+(global-unset-key (kbd "M-o"))
+(global-set-key (kbd "M-o") 'ace-window)
+
+
 (defun my-scroll-down ()
   (interactive)
   (scroll-down 3))
