@@ -19,6 +19,7 @@
 (require 'hex)
 (require 'how-do-i)
 (require 'uniquify)
+(require 'ace-window)
 
 ;; Are we running XEmacs or Emacs?
 (defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
