@@ -73,10 +73,10 @@
 ;;; Java
 ;;;
 (add-hook 'java-mode-hook
-	  '(lambda ()
-	     (c-set-style "gnu")
-	     (setq require-final-newline 'ask)
-	     (local-set-key (kbd "C-x #") 'copy-line-number-for-jdb)))
+	  #'(lambda ()
+	      (c-set-style "gnu")
+	      (setq require-final-newline 'ask)
+	      (local-set-key (kbd "C-x #") 'copy-line-number-for-jdb)))
 
 
 ;;;
