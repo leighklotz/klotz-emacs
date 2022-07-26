@@ -2,6 +2,11 @@
 
 (require 'tramp)
 
+(setq tramp-default-method "ssh")
+; /ssh:klotz@bb907:/homes/klotz/src/
+
+
+
 ;; from https://www.emacswiki.org/emacs/TrampMode
 ;; was called find-alternative-file-wtihn-sudo
 (defun sudo-edit-file ()
