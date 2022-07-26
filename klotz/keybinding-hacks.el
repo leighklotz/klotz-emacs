@@ -29,7 +29,8 @@
 
 ;; emacs font stuff has never intrigued me
 (global-unset-key (kbd "M-o"))
-(global-set-key (kbd "C-x o") 'ace-window)
+; this is too painful
+; (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "M-o") 'other-window)
 
 
