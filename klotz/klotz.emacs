@@ -52,8 +52,9 @@
 
 (global-set-key [mouse-5] 'scroll-down)
 (global-set-key [mouse-4] 'scroll-up)
-(global-set-key (quote [-67108832]) 'just-one-space)    
-(global-set-key "\e " 'dabbrev-expand)
+(global-set-key (kbd "C-M-SPC") 'just-one-space)
+;;(global-set-key "\e " 'dabbrev-expand)
+(global-set-key "\e " 'hippie-expand)
 (global-set-key "%" 'query-replace-regexp)
 
 ;;;
