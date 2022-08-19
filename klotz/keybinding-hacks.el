@@ -64,5 +64,7 @@
 (global-set-key "\e " 'hippie-expand)
 (global-set-key "%" 'query-replace-regexp)
 (define-key global-map [?\s-p] 'query-replace-regexp) ;; just prevent jarring ns-print-buffer, find a key later
+(define-key global-map [?\s-a] 'back-to-indentation)
+(define-key global-map [?\s-e] 'move-to-end-of-code-line) ;; RMS wouldn't let me add this in 1981 until I found a key
 
 (provide 'keybinding-hacks)

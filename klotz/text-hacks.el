@@ -161,6 +161,20 @@ selected rectangle."
     (delete-region start end)
     (insert text)))
 
+(if (not (fboundp 'point-in-comment))
+    (defun point-in-comment () (nth 4 (syntax-ppss))))
+
+;; adapted from https://www.emacswiki.org/emacs/BackToIndentationOrBeginning
+(defun move-to-end-of-code-line (arg)
+   "Move point to end of code.
+  By 'end of code' we mean before a possible comment. Comments are recognized
+  in any mode that sets syntax-ppss properly."
+   (interactive "P")
+   (let ((bol (save-excursion (beginning-of-line) (point))))
+     (move-end-of-line arg)
+     (while (and (not (= bol (point))) (point-in-comment))
+       (backward-char))
+     (skip-chars-backward " \t")))
 
 
 (provide 'text-hacks)
