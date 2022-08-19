@@ -57,4 +57,12 @@
 (global-set-key (kbd "M-l") 'downcase-dwim)
 (global-set-key (kbd "M-c") 'capitalize-dwim)
 
+(global-set-key [mouse-5] 'scroll-down)
+(global-set-key [mouse-4] 'scroll-up)
+(global-set-key (kbd "C-M-SPC") 'just-one-space)
+;;(global-set-key "\e " 'dabbrev-expand)
+(global-set-key "\e " 'hippie-expand)
+(global-set-key "%" 'query-replace-regexp)
+(define-key global-map [?\s-p] 'query-replace-regexp) ;; just prevent jarring ns-print-buffer, find a key later
+
 (provide 'keybinding-hacks)
