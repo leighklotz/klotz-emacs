@@ -17,10 +17,12 @@
 (global-set-key (kbd "C-%") 'query-replace-regexp)
 (global-set-key (kbd "M-=") 'compare-windows)
 (global-set-key (kbd "M-`") 'next-error)
-(global-set-key [mouse-4] 'my-scroll-down)
-(global-set-key [mouse-5] 'my-scroll-up)
 (global-set-key (kbd "C-z") 'undo)
 (global-unset-key (kbd "C-x C-z"))
+
+;; Mouse
+(global-set-key [mouse-4] 'my-scroll-down)
+(global-set-key [mouse-5] 'my-scroll-up)
 
 ;; someone turned M-g into a prefix command for font stuff,
 ;; making it impossible to define in local modes.
@@ -54,6 +56,17 @@
   (setq w32-lwindow-modifier 'super)	; lwindow acts as super
   (setq w32-rwindow-modifier 'super)    ; rwindow acts as super, not hyper
   )
+
+;;; Meta-space to predictive text
+;;; Switch from dabbrev-expand to hippie-expand
+(cond ((fboundp 'hippie-expand) 
+       (global-set-key (kbd "M-SPC") 'hippie-expand)
+      (t 
+       (global-set-key (kbd "M-SPC") 'dabbrev-expand)
+       ;; when left at the default, if you type a single lowercase letter
+       ;; and it matches a camel-case word, it lowercases the word.
+       (setq dabbrev-case-replace 'case-replace)
+       (setq dabbrev-case-fold-search nil))))
 
 ; (global-set-key "\eP" 'my-crash-sound)
 
