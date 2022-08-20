@@ -13,8 +13,7 @@
 (global-set-key [kp-delete] 'delete-char)
 
 (global-set-key (kbd "C-M-SPC") 'just-one-space)
-
-;(global-set-key [(control ?x) (?%)] 'query-replace-regexp)
+(global-set-key (kbd "C-X %") 'query-replace-regexp)
 (global-set-key (kbd "C-%") 'query-replace-regexp)
 (global-set-key (kbd "M-=") 'compare-windows)
 (global-set-key (kbd "M-`") 'next-error)
