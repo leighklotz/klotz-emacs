@@ -2,10 +2,7 @@
 
 (require 'tramp)
 
-(setq tramp-default-method "ssh")
-; /ssh:klotz@bb907:/homes/klotz/src/
-
-
+(setq tramp-default-method "ssh") ; /ssh:user@host:/homes/user/src/
 
 ;; from https://www.emacswiki.org/emacs/TrampMode
 ;; was called find-alternative-file-wtihn-sudo
@@ -22,4 +19,3 @@
       (find-alternate-file fname))))
 
 (provide 'tramp-hacks)
-
