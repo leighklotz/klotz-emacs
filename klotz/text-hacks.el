@@ -161,6 +161,4 @@ selected rectangle."
     (delete-region start end)
     (insert text)))
 
-
-
 (provide 'text-hacks)
