@@ -34,6 +34,11 @@
 (global-set-key (kbd "M-o") 'other-window)
 
 
+;; https://karthinks.com/software/batteries-included-with-emacs/#dwim-commands--upcase-downcase-and-more
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
+
 (defun my-scroll-down ()
   (interactive)
   (scroll-down 3))
@@ -47,14 +52,9 @@
   (setq w32-pass-lwindow-to-system nil
 	w32-pass-rwindow-to-system nil)
   (setq w32-lwindow-modifier 'super)	; lwindow acts as super
-  (setq w32-rwindow-modifier 'super) ; rwindow acts as super, not hyper
+  (setq w32-rwindow-modifier 'super)    ; rwindow acts as super, not hyper
   )
 
 ; (global-set-key "\eP" 'my-crash-sound)
-
-;; https://karthinks.com/software/batteries-included-with-emacs/#dwim-commands--upcase-downcase-and-more
-(global-set-key (kbd "M-u") 'upcase-dwim)
-(global-set-key (kbd "M-l") 'downcase-dwim)
-(global-set-key (kbd "M-c") 'capitalize-dwim)
 
 (provide 'keybinding-hacks)
