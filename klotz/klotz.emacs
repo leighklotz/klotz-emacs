@@ -2,10 +2,9 @@
 
 (push "~klotz/.emacs.d/klotz" load-path)
 
-(when (>= emacs-major-version 24)
+(when (>= emacs-major-version 25)
   (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t))
 
 (require 'keybinding-hacks)
 (require 'smtpmail-hacks)
@@ -19,7 +18,7 @@
 (require 'hex)
 (require 'how-do-i)
 (require 'uniquify)
-(require 'ace-window)
+; (require 'ace-window)
 
 ;; Are we running XEmacs or Emacs?
 (defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
@@ -28,34 +27,35 @@
 (if (not running-xemacs)
     (global-font-lock-mode t))
 
+;;; Bell
+(setq ring-bell-function
+      #'(lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
+
 ;;;
 ;;; General/text
 ;;;
 
 (setq text-mode-hook #'(lambda () (setq require-final-newline 'ask)))
 
-(setq dabbrev-case-replace 'case-replace)
-(setq line-move-visual nil)
-(setq next-line-add-newlines nil)
+;;; Newlines
+;; Always end a file with a newline
 (setq require-final-newline 'ask)
+;; Stop at the end of the file, not just add lines
+(setq next-line-add-newlines nil)
+(setq line-move-visual nil)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-;; when left at the default, if you type a single lowercase letter and it matches a camel-case word, it lowercases the word.
-(setq dabbrev-case-fold-search nil)
 (setq comint-input-ring-size 1000)
 (setq inhibit-startup-message t)
-
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
-
-(global-set-key [mouse-5] 'scroll-down)
-(global-set-key [mouse-4] 'scroll-up)
-(global-set-key (kbd "C-M-SPC") 'just-one-space)
-;;(global-set-key "\e " 'dabbrev-expand)
-(global-set-key "\e " 'hippie-expand)
-(global-set-key "%" 'query-replace-regexp)
 
 ;;;
 ;;; Mode stuff
@@ -79,20 +79,17 @@
 	      (setq require-final-newline 'ask)
 	      (local-set-key (kbd "C-x #") 'copy-line-number-for-jdb)))
 
-
-;;; Bell
-(setq ring-bell-function
-      #'(lambda ()
-        (let ((orig-fg (face-foreground 'mode-line)))
-          (set-face-foreground 'mode-line "#F2804F")
-          (run-with-idle-timer 0.1 nil
-                               (lambda (fg) (set-face-foreground 'mode-line fg))
-                               orig-fg))))
-
+;;;
+;;; PHP
+;;;
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+;(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 
 ;;;
 ;;; Custom
 ;;;
+
 ;;; Maintain custom-set-variables, custom-set-faces, etc.
 ;;; in a well-known file, one for each hostname.  Custom commnads
 ;;; in emacs will respect this variable and edit that file instead of
@@ -101,17 +98,6 @@
 (if (not (file-exists-p custom-file))
     (message "Please create empty custom file %s" custom-file)
   (load custom-file))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (ack string-inflection yaml-mode tldr scala-mode pig-mode php-mode markdown-mode json-mode graphviz-dot-mode go-mode flymake-json exec-path-from-shell csv-mode csv company))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;;; if you ever see custom-set-variables below here, move it to the correct
+;;; file above
