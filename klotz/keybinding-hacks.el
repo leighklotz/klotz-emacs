@@ -12,6 +12,8 @@
 (global-set-key [delete] 'delete-char)
 (global-set-key [kp-delete] 'delete-char)
 
+(global-set-key (kbd "C-M-SPC") 'just-one-space)
+
 ;(global-set-key [(control ?x) (?%)] 'query-replace-regexp)
 (global-set-key (kbd "C-%") 'query-replace-regexp)
 (global-set-key (kbd "M-=") 'compare-windows)
@@ -32,7 +34,6 @@
 ; this is too painful
 ; (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "M-o") 'other-window)
-
 
 ;; https://karthinks.com/software/batteries-included-with-emacs/#dwim-commands--upcase-downcase-and-more
 (global-set-key (kbd "M-u") 'upcase-dwim)
