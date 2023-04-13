@@ -2,7 +2,8 @@
 
 ;;; https://chat.openai.com/chat/50227b46-7629-49db-b6ba-49fe71df3ea3: Please show an implemention of an Emacs major mode for editing Splunk SPL queries. Provide at least syntax highlighting. 
 ;;; https://www.omarpolo.com/post/writing-a-major-mode.html
-;; https://emacs.stackexchange.com/questions/20712/how-to-add-complex-syntax-highlighting-in-a-minor-mode
+;;; https://emacs.stackexchange.com/questions/20712/how-to-add-complex-syntax-highlighting-in-a-minor-mode
+;;; https://github.com/arcsector/vscode-splunk-search-syntax
 
 (require 'font-lock)
 
