@@ -58,8 +58,13 @@ Use \[M-X name-this-emacs\] first"))
 	  (directory-files my-desktop-dirname)))
 
 
-(when (not (member '(:EVAL invocation-name) frame-title-format))
-  (setq desktop-hackks-old-frame-title-format frame-title-format)
-  (setq frame-title-format (append frame-title-format '(" [" (:EVAL invocation-name) "]"))))
+(defvar desktop-hacks-old-frame-title-format)
+(when (or (not (listp frame-title-format))
+	  (not (member '(:EVAL invocation-name) frame-title-format)))
+  (setq desktop-hacks-old-frame-title-format frame-title-format)
+  (setq frame-title-format
+	(append
+	 (if (listp frame-title-format) frame-title-format (list frame-title-format))
+	 '(" [" (:EVAL invocation-name) "]"))))
 
 (provide 'desktop-hacks)

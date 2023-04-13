@@ -4,6 +4,7 @@
 
 (when (>= emacs-major-version 25)
   (require 'package)
+  (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t))
 
 (require 'keybinding-hacks)
@@ -18,6 +19,7 @@
 (require 'hex)
 (require 'how-do-i)
 (require 'uniquify)
+(require 'spl-mode)
 ; (require 'ace-window)
 
 ;; Are we running XEmacs or Emacs?

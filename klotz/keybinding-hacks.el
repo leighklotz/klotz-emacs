@@ -18,6 +18,8 @@
 (global-set-key (kbd "M-=") 'compare-windows)
 (global-set-key (kbd "M-`") 'next-error)
 (global-set-key (kbd "C-z") 'undo)
+(global-unset-key (kbd "M-h")) 		;don't want iconify-frame
+(global-unset-key (kbd "s-h")) 		;don't want ns-do-hide-emacs
 (global-unset-key (kbd "C-x C-z"))
 
 ;; Mouse
@@ -60,13 +62,13 @@
 ;;; Meta-space to predictive text
 ;;; Switch from dabbrev-expand to hippie-expand
 (cond ((fboundp 'hippie-expand) 
-       (global-set-key (kbd "M-SPC") 'hippie-expand)
+       (global-set-key (kbd "M-SPC") 'hippie-expand))
       (t 
        (global-set-key (kbd "M-SPC") 'dabbrev-expand)
        ;; when left at the default, if you type a single lowercase letter
        ;; and it matches a camel-case word, it lowercases the word.
        (setq dabbrev-case-replace 'case-replace)
-       (setq dabbrev-case-fold-search nil))))
+       (setq dabbrev-case-fold-search nil)))
 
 ; (global-set-key "\eP" 'my-crash-sound)
 
