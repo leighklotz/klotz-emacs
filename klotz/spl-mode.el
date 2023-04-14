@@ -1,38 +1,59 @@
-;;;-*-Emacs-Lisp-*-
+;;;-*- Mode: EMACS-LISP -*-
 
-;;; https://chat.openai.com/chat/50227b46-7629-49db-b6ba-49fe71df3ea3: Please show an implemention of an Emacs major mode for editing Splunk SPL queries. Provide at least syntax highlighting. 
-;;; https://www.omarpolo.com/post/writing-a-major-mode.html
-;;; https://emacs.stackexchange.com/questions/20712/how-to-add-complex-syntax-highlighting-in-a-minor-mode
-;;; https://github.com/arcsector/vscode-splunk-search-syntax
+;;; https://chat.openai.com/c/7d4fde88-baa7-4288-9b1c-b3feb34713d2
+;;; GPT-4
 
 (require 'font-lock)
+(require 'smie)
 
 ;; Define the keywords for SPL syntax highlighting
-(setq spl-font-lock-keywords
-  (let* ((keywords '("NOT" "abs" "abstract" "accum" "acos" "acosh" "addcoltotals" "addinfo" "addtotals" "analyzefields" "and" "anomalies" "anomalousvalue" "append" "appendcols" "appendpipe" "arules" "as" "asin" "asinh" "associate" "atan" "atan2" "atanh" "audit" "autoregress" "avg" "bucket" "bucketdir" "by" "case" "ceiling" "chart" "cidrmatch" "cluster" "coalesce" "collect" "commands" "concurrency" "contingency" "convert" "correlate" "cos" "cosh" "count" "crawl" "datamodel" "dbinspect" "dbxlookup" "dbxquery" "dedup" "delete" "delta" "diff" "dispatch" "distinct_count" "earliest" "earliest_time" "erex" "estdc" "estdc_error" "eval" "eventcount" "eventstats" "exact" "exp" "extract" "false" "false)\b" "fieldformat" "fields" "fieldsummary" "file" "filldown" "fillnull" "findtypes" "first" "floor" "folderize" "foreach" "format" "from" "gauge" "gentimes" "geostats" "head" "highlight" "history" "hypot" "if" "in" "input" "inputcsv" "inputlookup" "iplocation" "isbool" "isint" "isnotnull" "isnull" "isnum" "isstr" "join" "kmeans" "kvform" "last" "latest" "latest_time" "len" "like" "list" "ln" "loadjob" "localize" "localop" "log" "lookup" "lower" "ltrim" "makecontinuous" "makemv" "makeresults" "map" "match" "max" "md5" "mean" "median" "metadata" "metasearch" "min" "mode" "mstats" "multikv" "multisearch" "mvappend" "mvcombine" "mvcount" "mvdedup" "mvexpand" "mvfilter" "mvfind" "mvindex" "mvjoin" "mvrange" "mvsort" "mvzip" "nomv" "now" "null" "nullif" "or" "outlier" "output" "outputcsv" "outputlookup" "outputnew)" "outputnew)\b" "outputtext" "over" "overlap" "per_day" "per_hour" "per_minute" "per_second" "percentile" "pi" "pivot" "pow" "predict" "printf" "random" "range" "rangemap" "rare" "rate" "regex" "relative_time" "relevancy" "reltime" "rename" "replace" "rest" "return" "reverse" "rex" "round" "rtorder" "rtrim" "run" "savedsearch" "script" "scrub" "search" "searchmatch" "searchtxn" "selfjoin" "sendemail" "set" "setfields" "sha1" "sha256" "sha512" "sichart" "sigfig" "sin" "sinh" "sirare" "sistats" "sitimechart" "sitop" "sort" "spath" "split" "sqrt" "stats" "stdev" "stdevp" "strcat" "streamstats" "strftime" "strptime" "substr" "sum" "sumsq" "table" "tags" "tail" "tan" "tanh" "time" "timechart" "timewrap" "tonumber" "top" "tostring" "transaction" "transpose" "trendline" "trim" "true" "tscollect" "tstats" "typeahead" "typelearner" "typeof" "typer" "uniq" "untable" "upper" "urldecode" "validate" "values" "var" "varp" "where" "x11" "xmlkv" "xmlunescape" "xpath" "xyseries"))
-         (keyword-regexp (regexp-opt keywords 'symbols)))
-    `((,keyword-regexp . font-lock-keyword-face)
-      ;; Highlight command options starting with a '-' or '|'
-      ;; this doesn't work
-      ("- *[a-zA-Z0-9_]+" . font-lock-keyword-face)
-      ("| *[a-zA-Z0-9_]+" . font-lock-keyword-face))))
+(defvar splunk-font-lock-keywords
+  (let* ((transforming-keywords (split-string "search stats table timechart sort top dedup head join spath transaction tstats"))
+         (eval-keywords (split-string "eval where rex fields"))
+         (macro-names (split-string "macro1 macro2 macro3"))
+         (constants (split-string "true false null"))
+         (transforming-regexp (regexp-opt transforming-keywords 'words))
+	 (builtin-regexp (regexp-opt (split-string "abstract accum addcoltotals addinfo addtotals analyzefields anomalies anomalousvalue append appendcols appendpipe arules associate audit autoregress bucket bucketdir chart cluster collect concurrency contingency convert correlate crawl datamodel dbinspect dbxquery dbxlookup dedup delete delta diff dispatch erex eval eventcount eventstats extract fieldformat fields fieldsummary file filldown fillnull findtypes folderize foreach format from gauge gentimes geostats head highlight history input inputcsv inputlookup iplocation join kmeans kvform loadjob localize localop lookup makecontinuous makemv makeresults map metadata metasearch multikv multisearch mvcombine mvexpand nomv outlier outputcsv outputlookup outputtext overlap pivot predict rangemap rare regex relevancy reltime rename replace rest return reverse rex rtorder run savedsearch script scrub search searchtxn selfjoin sendemail set setfields sichart sirare sistats sitimechart sitop sort spath stats strcat streamstats table tags tail timechart top transaction transpose trendline tscollect tstats typeahead typelearner typer uniq untable where x11 xmlkv xmlunescape xpath xyseries")))
+         (eval-regexp (regexp-opt eval-keywords 'words))
+         (macro-regexp (concat "`" (regexp-opt macro-names t)))
+         (constants-regexp (regexp-opt constants 'words))
+	 (comment-regexp "`\\{3\\}\\(?:.\\|\n\\)*?`\\{3\\}"))
+    `((,comment-regexp . font-lock-comment-face)
+      (,transforming-regexp . font-lock-keyword-face)
+      (,builtin-regexp . font-lock-function-name-face)
+      (,eval-regexp . font-lock-function-name-face)
+      (,macro-regexp . font-lock-preprocessor-face)
+      (,constants-regexp . font-lock-constant-face)
+      ;; Highlight pipe character
+      ("|" . font-lock-builtin-face))))
 
-;; Define the mode map (keybindings) for Spl mode
-(defvar spl-mode-map
+;; SMIE grammar and indentation rules
+(defvar splunk-smie-grammar
+  (smie-prec2->grammar
+   (smie-precs->prec2 '((assoc "|")))))
+
+(defun splunk-smie-rules (kind token)
+  (pcase (cons kind token)
+    (`(:elem . basic) 2)
+    (`(:before . ,(or "(" "[" "{")) (smie-rule-parent))
+    (`(:after . ,(or ")" "]" "}")) (smie-rule-parent))
+    (`(:before . "|") (if (smie-rule-bolp) (smie-rule-parent) (smie-rule-separator kind)))))
+
+;; Define the mode map (keybindings) for Splunk mode
+(defvar splunk-mode-map
   (let ((map (make-sparse-keymap)))
     map)
-  "Keymap for `spl-mode'.")
+  "Keymap for `splunk-mode'.")
 
-;; Define the Splunk SPL major mode
-(define-derived-mode spl-mode prog-mode "SPL"
+;; Define the Splunk major mode
+(define-derived-mode splunk-mode prog-mode "Splunk"
   "Major mode for editing Splunk SPL queries."
-  (setq-local font-lock-defaults
-              '((spl-font-lock-keywords)
-                nil nil nil nil
-		;; https://emacs.stackexchange.com/questions/20712/how-to-add-complex-syntax-highlighting-in-a-minor-mode
-		;; says to remove this
-		; (font-lock-syntactic-face-function . (prog-mode-font-lock-syntactic-face-function)
-		)))
+  (setq-local font-lock-defaults '((splunk-font-lock-keywords)))
+  (setq-local smie-grammar splunk-smie-grammar)
+  (smie-setup splunk-smie-grammar #'splunk-smie-rules)
+  (setq-local comment-start "```")
+  (setq-local comment-end "```")
+  (setq-local comment-end-can-be-escaped t))
 
-(provide 'spl-mode)
 
+(provide 'splunk-mode)
