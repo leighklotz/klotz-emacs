@@ -19,6 +19,7 @@
 (global-set-key (kbd "M-`") 'next-error)
 (global-set-key (kbd "C-z") 'undo)
 (global-unset-key (kbd "M-h")) 		;don't want iconify-frame
+(global-unset-key (kbd "s-w")) 		;don't want delete-frame
 (global-unset-key (kbd "s-h")) 		;don't want ns-do-hide-emacs
 (global-unset-key (kbd "C-x C-z"))
 
