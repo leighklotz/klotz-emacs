@@ -89,6 +89,12 @@
 ;(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 
 ;;;
+;;; Copilot
+;;;
+
+(autoload 'copilot-mode "~/.emacs.d/copilot-emacsd/init.el" "Minor mode for AIML editing" t)
+
+;;;
 ;;; Custom
 ;;;
 
