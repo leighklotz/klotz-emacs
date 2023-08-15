@@ -53,6 +53,7 @@
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 (setq comint-input-ring-size 1000)
 (setq inhibit-startup-message t)
+(setq-default indent-tabs-mode nil)
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
