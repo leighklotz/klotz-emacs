@@ -2,7 +2,15 @@
 
 (require 'tramp)
 
-(setq tramp-default-method "ssh") ; /ssh:user@host:/homes/user/src/
+;;;
+;;; Tramp
+;;;
+
+;;; C-x C-f
+;;; /ssh:root@otherhost:/etc/motd
+;;; /ssh:user@host:/homes/user/src/
+(customize-set-variable 'tramp-default-method "ssh")
+
 
 ;; from https://www.emacswiki.org/emacs/TrampMode
 ;; was called find-alternative-file-wtihn-sudo

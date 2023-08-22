@@ -83,13 +83,6 @@
 	      (local-set-key (kbd "C-x #") 'copy-line-number-for-jdb)))
 
 ;;;
-;;; Tramp
-;;;
-
-;;; C-x C-f /ssh:root@otherhost:/etc/motd
-(customize-set-variable 'tramp-default-method "ssh")
-
-;;;
 ;;; PHP
 ;;;
 (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
