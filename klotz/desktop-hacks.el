@@ -45,7 +45,7 @@ Use \[M-X name-this-emacs\] first"))
 ;;; You might want to do restore-named-emacs and autocomplete instead
 (defun list-named-emacs ()
   (interactive)
-  (message (mapconcat 'identity (named-emacs-list) "\n"))) 
+  (message (mapconcat 'identity (named-emacs-list-with-dates) "\n"))) 
 
 (defun named-emacs-desktop-dirname (name)
   (concat (file-name-as-directory my-desktop-dirname) name))
@@ -56,6 +56,13 @@ Use \[M-X name-this-emacs\] first"))
 		nil
 	      (list entry)))
 	  (directory-files my-desktop-dirname)))
+
+(defun named-emacs-list-with-dates ()
+  ;; like named-emacs-list but with dates
+  (mapcar (lambda (entry)
+            (let ((file (concat (file-name-as-directory my-desktop-dirname) entry)))
+              (concat entry " " (format-time-string "%Y-%m-%d %H:%M:%S" (nth 5 (file-attributes file))))))
+          (named-emacs-list)))
 
 
 (defvar desktop-hacks-old-frame-title-format)
